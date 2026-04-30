@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master English - Vibras Positivas HM</title>
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIk1hc3RlciBFbmdsaXNoIFZpYnJhcyIsCiAgInNob3J0X25hbWUiOiAiRW5nbGlzaFBXQSIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjZmZmZmZmIiwKICAidGhlbWVfY29sb3IiOiAiIzRiNjljZiIKfQ==">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .correct { border: 2px solid #10b981; background-color: #ecfdf5; }
+        .incorrect { border: 2px solid #ef4444; background-color: #fef2f2; }
+        @keyframes bounce-subtle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        .logo-anim { animation: bounce-subtle 3s infinite ease-in-out; }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans min-h-screen flex flex-col">
+
+    <header class="bg-blue-600 text-white p-6 shadow-lg text-center">
+        <h1 class="text-3xl font-bold tracking-tight">PRESENT PERFECT MASTER</h1>
+        <p class="text-sm opacity-90 mt-1">Desarrollado por: <strong>Vibras Positivas HM</strong></p>
+    </header>
+
+    <main class="flex-grow container mx-auto p-4 max-w-2xl">
+        
+        <div id="exercise-card" class="bg-white rounded-2xl shadow-xl p-8 mt-6">
+            <div id="progress-bar" class="w-full bg-gray-200 rounded-full h-2.5 mb-6">
+                <div id="progress-fill" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+            </div>
+
+            <h2 id="block-title" class="text-blue-500 font-bold uppercase text-xs tracking-widest mb-2"></h2>
+            <p id="instruction" class="text-gray-600 italic mb-4"></p>
+            <p id="question-text" class="text-xl font-semibold text-gray-800 mb-6"></p>
+
+            <div id="input-area" class="space-y-4">
+                <input type="text" id="user-answer" placeholder="Escribe tu respuesta aquí..." 
+                    class="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-all text-lg">
+                <button onclick="checkAnswer()" id="submit-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-transform active:scale-95 shadow-md">
+                    VERIFICAR RESPUESTA
+                </button>
+            </div>
+
+            <div id="feedback" class="mt-6 hidden p-4 rounded-xl text-center font-medium"></div>
+            
+            <button onclick="nextQuestion()" id="next-btn" class="hidden mt-4 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition-all">
+                SIGUIENTE EJERCICIO ➔
+            </button>
+        </div>
+
+        <div class="mt-8 text-center text-gray-400 text-xs">
+            <p>© 2026 Vibras Positivas HM. Todos los derechos reservados.</p>
+        </div>
+    </main>
+
+    <script>
+        const exercises = [
+            [span_0](start_span)// BLOQUE 1[span_0](end_span)
+            { block: "Estructura Básica", inst: "Completa con have o has", q: "I __________ finished my work.", a: "have", rule: "Se usa 'have' con I, You, We, They. Se usa 'has' con He, She, It." },
+            { block: "Estructura Básica", inst: "Completa con have o has", q: "She __________ gone to the store.", a: "has", rule: "Usamos 'has' porque el sujeto es She (3ra persona singular)." },
+            { block: "Estructura Básica", inst: "Escribe el participio correcto", q: "I have __________ (see) that film.", a: "seen", rule: "El participio de 'see' es 'seen' (Irregular: see-saw-seen)." },
+            [span_1](start_span)// BLOQUE 2[span_1](end_span)
+            { block: "For y Since", inst: "Completa con for o since", q: "I have lived here __________ 2010.", a: "since", rule: "Usamos 'since' para un punto específico en el tiempo (fecha, hora, evento)." },
+            { block: "For y Since", inst: "Completa con for o since", q: "She has been waiting __________ two hours.", a: "for", rule: "Usamos 'for' para indicar un periodo o duración de tiempo." },
+            [span_2](start_span)// BLOQUE 3[span_2](end_span)
+            { block: "Already y Yet", inst: "Completa con already o yet", q: "Have you finished your homework __________?", a: "yet", rule: "Usamos 'yet' en preguntas y negativas, generalmente al final de la frase." },
+            [span_3](start_span)// BLOQUE 4[span_3](end_span)
+            { block: "Ever y Never", inst: "Completa con ever o never", q: "Have you __________ been to Japan?", a: "ever", rule: "Usamos 'ever' en preguntas para preguntar 'alguna vez'." },
+            [span_4](start_span)[span_5](start_span)// BLOQUE 5[span_4](end_span)[span_5](end_span)
+            { block: "Present Perfect vs Past Simple", inst: "Usa el tiempo correcto", q: "I __________ (see) that movie last night.", a: "saw", rule: "Usamos 'Past Simple' (saw) porque se especifica un tiempo terminado: 'last night'." }
+        ];
+
+        let currentIdx = 0;
+
+        function loadQuestion() {
+            const ex = exercises[currentIdx];
+            document.getElementById('block-title').innerText = ex.block;
+            document.getElementById('instruction').innerText = ex.inst;
+            document.getElementById('question-text').innerText = ex.q;
+            document.getElementById('user-answer').value = "";
+            document.getElementById('user-answer').className = "w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-all text-lg";
+            document.getElementById('feedback').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('submit-btn').disabled = false;
+            
+            const progress = ((currentIdx) / exercises.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + "%";
+        }
+
+        function checkAnswer() {
+            const userInp = document.getElementById('user-answer').value.trim().toLowerCase();
+            const correctAnsw = exercises[currentIdx].a.toLowerCase();
+            const feedback = document.getElementById('feedback');
+            const input = document.getElementById('user-answer');
+
+            feedback.classList.remove('hidden');
+            document.getElementById('submit-btn').disabled = true;
+
+            if (userInp === correctAnsw) {
+                feedback.innerHTML = "¡EXCELENTE! ¡VIBRAS POSITIVAS HM! 🎉 <br> ¡Lo has logrado con maestría!";
+                feedback.className = "mt-6 p-4 rounded-xl text-center font-bold bg-green-100 text-green-700 border-2 border-green-500";
+                input.classList.add('correct');
+            } else {
+                feedback.innerHTML = "¡Casi lo tienes! Intenta de nuevo. <br><small>" + exercises[currentIdx].rule + "</small>";
+                feedback.className = "mt-6 p-4 rounded-xl text-center font-medium bg-red-100 text-red-700 border-2 border-red-500";
+                input.classList.add('incorrect');
+            }
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentIdx++;
+            if (currentIdx < exercises.length) {
+                loadQuestion();
+            } else {
+                document.getElementById('exercise-card').innerHTML = `
+                    <div class="text-center p-8">
+                        <h2 class="text-4xl mb-4">🏆</h2>
+                        <h3 class="text-2xl font-bold text-blue-600">¡CURSO COMPLETADO!</h3>
+                        <p class="mt-4 text-gray-600">Has terminado todos los bloques de ejercicios.</p>
+                        <p class="font-bold mt-2">VIBRAS POSITIVAS HM</p>
+                        <button onclick="location.reload()" class="mt-6 bg-blue-600 text-white px-6 py-2 rounded-full">Reiniciar</button>
+                    </div>
+                `;
+            }
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
