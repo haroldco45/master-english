@@ -5,99 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Master English - VIBRAS POSITIVAS HM</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .correct { border: 3px solid #10b981; background-color: #ecfdf5; }
-        .incorrect { border: 3px solid #ef4444; background-color: #fef2f2; }
-        @keyframes celebrate { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-        .celebration { animation: celebrate 0.5s ease-in-out; }
-    </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col font-sans">
+<body class="bg-gray-100 min-h-screen font-sans">
 
-    <header class="bg-indigo-700 text-white p-6 shadow-2xl text-center">
-        <h1 class="text-3xl font-extrabold tracking-tighter">ENGLISH PERFECT PWA</h1>
-        <p class="text-xs mt-2 uppercase tracking-widest opacity-80">Un proyecto de: <strong>VIBRAS POSITIVAS HM</strong></p>
+    <header class="bg-indigo-700 text-white p-6 shadow-lg text-center">
+        <h1 class="text-2xl font-bold uppercase">English Perfect PWA</h1>
+        <p class="text-xs mt-1">Un proyecto de: <strong>VIBRAS POSITIVAS HM</strong></p>
     </header>
 
-    <main class="flex-grow container mx-auto p-4 max-w-2xl">
-        <div id="game-container" class="bg-white rounded-3xl shadow-xl overflow-hidden mt-4 border border-gray-200">
-            <div class="w-full bg-gray-200 h-3">
-                <div id="progress-bar" class="bg-green-500 h-3 transition-all duration-500" style="width: 0%"></div>
-            </div>
+    <main class="p-4 max-w-xl mx-auto">
+        <div id="setup-screen" class="bg-white p-8 rounded-3xl shadow-xl text-center mt-10">
+            <h2 class="text-xl font-bold mb-4 text-indigo-700">¡Bienvenido!</h2>
+            <p class="text-gray-600 mb-6 italic">Haz clic abajo para cargar los ejercicios del documento.</p>
+            <button onclick="startApp()" class="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-bold w-full shadow-lg">
+                CARGAR EJERCICIOS
+            </button>
+        </div>
 
+        <div id="game-screen" class="hidden bg-white rounded-3xl shadow-xl overflow-hidden mt-4 border border-gray-200">
             <div class="p-8">
-                <div class="flex justify-between items-center mb-6">
-                    <span id="block-tag" class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full uppercase"></span>
+                <div class="flex justify-between items-center mb-4">
+                    <span id="block-tag" class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full"></span>
                     <span id="counter" class="text-gray-400 font-bold text-sm"></span>
                 </div>
+                <p id="instruction" class="text-gray-500 text-xs italic mb-2"></p>
+                <p id="question-text" class="text-xl font-bold text-gray-800 mb-6"></p>
 
-                <h2 id="instruction" class="text-gray-500 text-sm italic mb-2"></h2>
-                <div id="question-box" class="min-h-[100px] flex items-center">
-                    <p id="question-text" class="text-2xl font-bold text-gray-800 leading-tight"></p>
-                </div>
-
-                <div class="mt-8 space-y-4">
-                    <input type="text" id="user-input" autocomplete="off"
-                        class="w-full p-5 text-xl border-2 border-gray-100 rounded-2xl focus:outline-none focus:border-indigo-500 transition-all shadow-inner"
-                        placeholder="Escribe tu respuesta...">
-                    
-                    <button onclick="checkLogic()" id="btn-check" 
-                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-5 rounded-2xl transition-all transform active:scale-95 shadow-lg">
-                        VERIFICAR AHORA
-                    </button>
-                </div>
-
-                <div id="feedback" class="mt-6 hidden p-5 rounded-2xl border-2 transition-all">
-                    <p id="feedback-title" class="font-black text-lg mb-1"></p>
-                    <p id="feedback-msg" class="text-sm leading-relaxed"></p>
-                </div>
-
-                <button onclick="loadNext()" id="btn-next" 
-                    class="hidden mt-4 w-full bg-gray-800 text-white font-bold py-4 rounded-2xl hover:bg-black transition-all">
-                    CONTINUAR ➔
-                </button>
+                <input type="text" id="user-input" class="w-full p-4 border-2 border-gray-200 rounded-xl mb-4 focus:border-indigo-500 outline-none">
+                <button onclick="checkAnswer()" id="btn-check" class="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold">VERIFICAR</button>
+                
+                <div id="feedback" class="mt-4 hidden p-4 rounded-xl font-medium text-center border-2"></div>
+                <button onclick="loadNext()" id="btn-next" class="hidden mt-4 w-full bg-black text-white py-4 rounded-xl font-bold">CONTINUAR ➔</button>
             </div>
         </div>
     </main>
 
-    <footer class="p-6 text-center text-gray-400 text-xs">
-        <p>© 2026 <strong>VIBRAS POSITIVAS HM</strong> | Todos los derechos reservados.</p>
+    <footer class="mt-10 text-center text-gray-400 text-xs">
+        <p>© 2026 <strong>VIBRAS POSITIVAS HM</strong></p>
     </footer>
 
     <script>
         const database = [
-            // BLOQUE 1: ESTRUCTURA BÁSICA
-            [span_0](start_span){ b: "BLOQUE 1", i: "Completa con have o has", q: "I __________ finished my work.", a: "have", r: "Usamos 'have' para I, You, We, They[span_0](end_span)." },
-            [span_1](start_span){ b: "BLOQUE 1", i: "Completa con have o has", q: "She __________ gone to the store.", a: "has", r: "She es tercera persona singular, requiere 'has'[span_1](end_span)." },
-            [span_2](start_span){ b: "BLOQUE 1", i: "Completa con have o has", q: "They __________ arrived early.", a: "have", r: "They es plural, requiere 'have'[span_2](end_span)." },
-            { b: "BLOQUE 1", i: "Escribe la forma negativa (contracción)", q: "She has arrived. (-)[span_3](start_span)", a: "she hasn't arrived", r: "La contracción negativa de has es hasn't[span_3](end_span)." },
-            { b: "BLOQUE 1", i: "Escribe la forma interrogativa", q: "They have been to Paris. (?)[span_4](start_span)", a: "have they been to paris?", r: "Invertimos el auxiliar: Have + sujeto + participio[span_4](end_span)." },
-            [span_5](start_span){ b: "BLOQUE 1", i: "Escribe el participio correcto", q: "I have __________ (see) that film.", a: "seen", r: "El participio de 'see' es 'seen'[span_5](end_span)." },
-            [span_6](start_span){ b: "BLOQUE 1", i: "Corrige el error", q: "She have gone home.", a: "she has gone home", r: "Error de concordancia: She siempre va con has[span_6](end_span)." },
-
-            // BLOQUE 2: FOR Y SINCE
-            [span_7](start_span){ b: "BLOQUE 2", i: "Completa con for o since", q: "I have lived here __________ 2010.", a: "since", r: "Since se usa para un punto específico en el tiempo[span_7](end_span)." },
-            [span_8](start_span){ b: "BLOQUE 2", i: "Completa con for o since", q: "She has been waiting __________ two hours.", a: "for", r: "For se usa para duraciones o periodos de tiempo[span_8](end_span)." },
-            [span_9](start_span){ b: "BLOQUE 2", i: "Responde (2009)", q: "How long have you been a teacher?", a: "i have been a teacher since 2009", r: "Usamos since para marcar el inicio en 2009[span_9](end_span)." },
-            [span_10](start_span){ b: "BLOQUE 2", i: "Elige la opción correcta", q: "He has been asleep (since / for) 3 pm.", a: "since", r: "3 pm es un momento exacto, usamos since[span_10](end_span)." },
-
-            // BLOQUE 3: ALREADY Y YET
-            [span_11](start_span){ b: "BLOQUE 3", i: "Completa con already o yet", q: "Have you finished your homework __________?", a: "yet", r: "Yet se usa al final de preguntas y negativas[span_11](end_span)." },
-            { b: "BLOQUE 3", i: "Completa con already o yet", q: "I’ve __________ seen that movie. [span_12](start_span)It’s great.", a: "already", r: "Already indica que algo sucedió antes de lo esperado[span_12](end_span)." },
-            [span_13](start_span){ b: "BLOQUE 3", i: "Traduce", q: "Ella todavía no ha llegado.", a: "she hasn't arrived yet", r: "Todavía no se traduce como hasn't... yet[span_13](end_span)." },
-
-            // BLOQUE 4: EVER Y NEVER
-            [span_14](start_span){ b: "BLOQUE 4", i: "Completa con ever o never", q: "Have you __________ been to Japan?", a: "ever", r: "Ever se usa para preguntar 'alguna vez'[span_14](end_span)." },
-            { b: "BLOQUE 4", i: "Completa con ever o never", q: "I have __________ tried sushi. [span_15](start_span)I don’t like fish.", a: "never", r: "Never indica 'nunca' en frases afirmativas[span_15](end_span)." },
-            { b: "BLOQUE 4", i: "Elige la opción correcta", q: "He has (ever / never) told a lie. [span_16](start_span)He's honest.", a: "never", r: "Si es honesto, nunca ha mentido[span_16](end_span)." },
-
-            // BLOQUE 5: PRESENT PERFECT VS PAST SIMPLE
-            [span_17](start_span)[span_18](start_span){ b: "BLOQUE 5", i: "Usa el tiempo correcto", q: "I __________ (see) that movie last night.", a: "saw", r: "Last night indica un tiempo terminado, usamos Past Simple[span_17](end_span)[span_18](end_span)." },
-            [span_19](start_span)[span_20](start_span){ b: "BLOQUE 5", i: "Usa el tiempo correcto", q: "We __________ (be) friends since we were children.", a: "have been", r: "La acción continúa desde la infancia, usamos Present Perfect[span_19](end_span)[span_20](end_span)." },
-            [span_21](start_span){ b: "BLOQUE 5", i: "Corrige el error", q: "I have seen him yesterday.", a: "i saw him yesterday", r: "No puedes usar Present Perfect con marcadores específicos como 'yesterday'[span_21](end_span)." }
+            { b: "BLOQUE 1", i: "Completa con have o has", q: "I __________ finished my work.", a: "have", r: "Usamos 'have' para I, You, We, They." },
+            { b: "BLOQUE 1", i: "Completa con have o has", q: "She __________ gone to the store.", a: "has", r: "She es 3ª persona singular, requiere 'has'." },
+            { b: "BLOQUE 2", i: "Completa con for o since", q: "I have lived here __________ 2010.", a: "since", r: "Usamos 'since' para un momento exacto." },
+            { b: "BLOQUE 3", i: "Completa con already o yet", q: "Have you finished your homework __________?", a: "yet", r: "Yet se usa al final de preguntas." },
+            { b: "BLOQUE 5", i: "Past Simple o Present Perfect", q: "I __________ (see) that movie last night.", a: "saw", r: "Last night indica Past Simple." }
         ];
 
         let current = 0;
+
+        function startApp() {
+            document.getElementById('setup-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            render();
+        }
 
         function render() {
             const data = database[current];
@@ -106,30 +68,23 @@
             document.getElementById('question-text').innerText = data.q;
             document.getElementById('counter').innerText = `${current + 1} / ${database.length}`;
             document.getElementById('user-input').value = "";
-            document.getElementById('user-input').className = "w-full p-5 text-xl border-2 border-gray-100 rounded-2xl focus:outline-none focus:border-indigo-500 transition-all shadow-inner";
             document.getElementById('feedback').classList.add('hidden');
             document.getElementById('btn-next').classList.add('hidden');
             document.getElementById('btn-check').classList.remove('hidden');
-            document.getElementById('progress-bar').style.width = `${((current) / database.length) * 100}%`;
         }
 
-        function checkLogic() {
-            const userVal = document.getElementById('user-input').value.trim().toLowerCase().replace(/[.,!¡¿?]/g, "");
-            const correctVal = database[current].a.toLowerCase().replace(/[.,!¡¿?]/g, "");
+        function checkAnswer() {
+            const userVal = document.getElementById('user-input').value.trim().toLowerCase();
+            const correctVal = database[current].a.toLowerCase();
             const feedback = document.getElementById('feedback');
-            const input = document.getElementById('user-input');
 
             feedback.classList.remove('hidden');
             if (userVal === correctVal) {
-                document.getElementById('feedback-title').innerText = "¡VIBRAS POSITIVAS HM! 🌟";
-                document.getElementById('feedback-msg').innerText = "¡Respuesta perfecta! Sigue así con esa energía.";
-                feedback.className = "mt-6 p-5 rounded-2xl border-2 bg-green-50 border-green-500 text-green-800 celebration";
-                input.classList.add('correct');
+                feedback.innerHTML = "¡VIBRAS POSITIVAS HM! 🌟<br>Excelente respuesta.";
+                feedback.className = "mt-4 p-4 rounded-xl border-2 bg-green-50 border-green-500 text-green-700 font-bold";
             } else {
-                document.getElementById('feedback-title').innerText = "¡APRENDIZAJE EN MARCHA! 📚";
-                document.getElementById('feedback-msg').innerText = "Recuerda: " + database[current].r;
-                feedback.className = "mt-6 p-5 rounded-2xl border-2 bg-red-50 border-red-500 text-red-800";
-                input.classList.add('incorrect');
+                feedback.innerHTML = "NORMA: " + database[current].r;
+                feedback.className = "mt-4 p-4 rounded-xl border-2 bg-red-50 border-red-500 text-red-700";
             }
             document.getElementById('btn-check').classList.add('hidden');
             document.getElementById('btn-next').classList.remove('hidden');
@@ -137,25 +92,9 @@
 
         function loadNext() {
             current++;
-            if (current < database.length) {
-                render();
-            } else {
-                document.getElementById('game-container').innerHTML = `
-                    <div class="p-10 text-center">
-                        <h2 class="text-5xl mb-4">🏆</h2>
-                        <h3 class="text-3xl font-black text-indigo-700 uppercase">¡ENTRENAMIENTO COMPLETO!</h3>
-                        <p class="text-gray-600 mt-4 italic text-lg">Has dominado todos los bloques de ejercicios.</p>
-                        <div class="mt-8 p-8 bg-indigo-50 rounded-3xl border-2 border-indigo-100">
-                            <p class="text-indigo-800 font-bold uppercase tracking-widest text-sm mb-2">Desarrollado por</p>
-                            <p class="text-3xl font-black text-indigo-900">VIBRAS POSITIVAS HM</p>
-                        </div>
-                        <button onclick="location.reload()" class="mt-10 bg-indigo-600 text-white px-12 py-5 rounded-2xl font-bold shadow-xl hover:bg-indigo-800 transition-all">REPETIR DESAFÍO</button>
-                    </div>
-                `;
-            }
+            if (current < database.length) render();
+            else alert("¡Entrenamiento completado por Vibras Positivas HM!");
         }
-
-        render();
     </script>
 </body>
 </html>
